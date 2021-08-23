@@ -3,14 +3,16 @@ file-rotatelogs
 
 Provide an `io.Writer` that periodically rotates log files from within the application. Port of [File::RotateLogs](https://metacpan.org/release/File-RotateLogs) from Perl to Go.
 
-[![Build Status](https://travis-ci.org/lestrrat-go/file-rotatelogs.png?branch=master)](https://travis-ci.org/lestrrat-go/file-rotatelogs)
+[![version](https://img.shields.io/github/v/tag/iproj/file-rotatelogs.svg?sort=semver)](https://github.com/iproj/file-rotatelogs/releases/latest)
+[![API Reference](https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667)](https://godoc.org/github.com/iproj/file-rotatelogs)
+[![Go version](https://img.shields.io/badge/go-1.14-blue.svg)](https://github.com/moovweb/gvm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/iproj/file-rotatelogs)](https://goreportcard.com/report/github.com/iproj/file-rotatelogs)
+[![Travis](https://travis-ci.com/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.com/iproj/file-rotatelogs)
+[![license](https://img.shields.io/github/license/iproj/file-rotatelogs.svg)](https://github.com/iproj/file-rotatelogs/blob/main/LICENSE)
 
-[![GoDoc](https://godoc.org/github.com/lestrrat-go/file-rotatelogs?status.svg)](https://godoc.org/github.com/lestrrat-go/file-rotatelogs)
-
-# WARNINGS
-
-THIS PROJECT HAS BEEN ARCHIVED. IT WILL NOT RECEIVE UPDATES, THE AUTHOR DOES NOT WISH TO MAINTAIN OR SUPPORT IT.
-IN SHORT, DO NOT USE THIS PROJECT.
+| Branch | Tests                                                                                                                                                | Coverage                                                                                                                             |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| main | [![TravisCI](https://travis-ci.com/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.com/iproj/file-rotatelogs)  | [![codecov](https://codecov.io/gh/iproj/file-rotatelogs/branch/main/graph/badge.svg)](https://codecov.io/gh/iproj/file-rotatelogs) |
 
 # SYNOPSIS
 
