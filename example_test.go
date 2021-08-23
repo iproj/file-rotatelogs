@@ -3,9 +3,14 @@ package rotatelogs_test
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"path/filepath"
+	"strconv"
+	"testing"
 
 	rotatelogs "github.com/iproj/file-rotatelogs"
+	"github.com/stretchr/testify/assert"
 )
 
 func ExampleForceNewFile() {
@@ -60,4 +65,38 @@ func ExampleForceNewFile() {
 	// OUTPUT:
 	// test.log 4
 	// test.log.1 4
+}
+
+func TestTooMuchLog(t *testing.T) {
+
+	var (
+		testDir       = "test_much_log"
+		testLogPath   = filepath.Join(testDir, "access_log")
+		rotationCount = 3
+		N             = 12 // N < log.Printf content size
+	)
+	err := os.Mkdir(testDir, 0777)
+	assert.Nil(t, err)
+	defer os.RemoveAll(testDir)
+	assert.Nil(t, err)
+
+	rl, err := rotatelogs.New(
+		testLogPath+".%Y%m%d%H%M",
+		rotatelogs.WithLinkName(testLogPath),
+		rotatelogs.WithRotationCount(uint(rotationCount)),
+		rotatelogs.WithRotationSize(12),
+	)
+	assert.Nil(t, err)
+
+	log.SetOutput(rl)
+	for i := 0; i < N; i++ {
+		log.Printf("Test content %d\n", i)
+	}
+	files, _ := ioutil.ReadDir(testDir)
+	fmt.Println(files)
+	assert.Equal(t, rotationCount+1, len(files))
+
+	bytez, err := ioutil.ReadFile(testLogPath)
+	assert.Nil(t, err)
+	assert.Equal(t, strconv.Itoa(N-1), string(bytez[len(bytez)-3:len(bytez)-1]))
 }
