@@ -7,12 +7,12 @@ Provide an `io.Writer` that periodically rotates log files from within the appli
 [![API Reference](https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667)](https://godoc.org/github.com/iproj/file-rotatelogs)
 [![Go version](https://img.shields.io/badge/go-1.14-blue.svg)](https://github.com/moovweb/gvm)
 [![Go Report Card](https://goreportcard.com/badge/github.com/iproj/file-rotatelogs)](https://goreportcard.com/report/github.com/iproj/file-rotatelogs)
-[![Travis](https://travis-ci.org/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.org/iproj/file-rotatelogs)
+[![Travis](https://travis-ci.com/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.com/iproj/file-rotatelogs)
 [![license](https://img.shields.io/github/license/iproj/file-rotatelogs.svg)](https://github.com/iproj/file-rotatelogs/blob/main/LICENSE)
 
 | Branch | Tests                                                                                                                                                | Coverage                                                                                                                             |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| main | [![TravisCI](https://travis-ci.org/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.org/iproj/file-rotatelogs)  | [![codecov](https://codecov.io/gh/iproj/file-rotatelogs/branch/main/graph/badge.svg)](https://codecov.io/gh/iproj/file-rotatelogs) |
+| main | [![TravisCI](https://travis-ci.com/iproj/file-rotatelogs.svg?branch=main)](https://travis-ci.com/iproj/file-rotatelogs)  | [![codecov](https://codecov.io/gh/iproj/file-rotatelogs/branch/main/graph/badge.svg)](https://codecov.io/gh/iproj/file-rotatelogs) |
 
 # SYNOPSIS
 
