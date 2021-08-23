@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lestrrat-go/file-rotatelogs/internal/fileutil"
+	"github.com/iproj/file-rotatelogs/internal/fileutil"
 	strftime "github.com/lestrrat-go/strftime"
 	"github.com/pkg/errors"
 )
@@ -141,6 +141,7 @@ func (rl *RotateLogs) getWriterNolock(bailOnRotateFail, useGenerationalNames boo
 			forceNewFile = true
 		}
 	} else {
+
 		if !useGenerationalNames && !sizeRotation {
 			// nothing to do
 			return rl.outFh, nil
@@ -317,7 +318,7 @@ func (rl *RotateLogs) rotateNolock(filename string) error {
 	cutoff := rl.clock.Now().Add(-1 * rl.maxAge)
 
 	// the linter tells me to pre allocate this...
-	toUnlink := make([]string, 0, len(matches))
+	toUnlink := make([]Unlink, 0, len(matches))
 	for _, path := range matches {
 		// Ignore lock files
 		if strings.HasSuffix(path, "_lock") || strings.HasSuffix(path, "_symlink") {
@@ -341,10 +342,11 @@ func (rl *RotateLogs) rotateNolock(filename string) error {
 		if rl.rotationCount > 0 && fl.Mode()&os.ModeSymlink == os.ModeSymlink {
 			continue
 		}
-		toUnlink = append(toUnlink, path)
+		toUnlink = append(toUnlink, Unlink{path: path, modTime: fi.ModTime()})
 	}
-
 	if rl.rotationCount > 0 {
+		// Sort by ModTime
+		quickSortByModTime(toUnlink, 0, len(toUnlink)-1)
 		// Only delete if we have more than rotationCount
 		if rl.rotationCount >= uint(len(toUnlink)) {
 			return nil
@@ -360,12 +362,50 @@ func (rl *RotateLogs) rotateNolock(filename string) error {
 	guard.Enable()
 	go func() {
 		// unlink files on a separate goroutine
-		for _, path := range toUnlink {
-			os.Remove(path)
+		for _, unlink := range toUnlink {
+			os.Remove(unlink.path)
 		}
 	}()
 
 	return nil
+}
+
+type Unlink struct {
+	path    string
+	modTime time.Time
+}
+
+func quickSortByModTime(arr []Unlink, left, right int) {
+	if left < right {
+		key := arr[left]
+		i := left
+		j := right
+		for {
+
+			for j > i {
+				if arr[j].modTime.Before(key.modTime) {
+					arr[i] = arr[j]
+					arr[j] = key
+					break
+				}
+				j--
+			}
+			for i < j {
+				if arr[i].modTime.After(key.modTime) {
+					arr[j] = arr[i]
+					arr[i] = key
+					break
+				}
+				i++
+			}
+			if i >= j {
+				break
+			}
+		}
+
+		quickSortByModTime(arr, left, j-1)
+		quickSortByModTime(arr, j+1, right)
+	}
 }
 
 // Close satisfies the io.Closer interface. You must
