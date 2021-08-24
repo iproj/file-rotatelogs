@@ -14,7 +14,9 @@ import (
 //
 // The bsase time that is used to generate the filename is truncated based
 // on the rotation time.
-func GenerateFn(pattern *strftime.Strftime, clock interface{ Now() time.Time }, rotationTime time.Duration) string {
+func GenerateFn(pattern *strftime.Strftime, clock interface {
+	Now() time.Time
+}) string {
 	now := clock.Now()
 
 	// XXX HACK: Truncate only happens in UTC semantics, apparently.
@@ -30,10 +32,7 @@ func GenerateFn(pattern *strftime.Strftime, clock interface{ Now() time.Time }, 
 	var base time.Time
 	if now.Location() != time.UTC {
 		base = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond(), time.UTC)
-		base = base.Truncate(rotationTime)
 		base = time.Date(base.Year(), base.Month(), base.Day(), base.Hour(), base.Minute(), base.Second(), base.Nanosecond(), base.Location())
-	} else {
-		base = now.Truncate(rotationTime)
 	}
 
 	return pattern.FormatString(base)

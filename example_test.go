@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"testing"
+	"time"
 
 	rotatelogs "github.com/iproj/file-rotatelogs"
 	"github.com/stretchr/testify/assert"
@@ -73,7 +74,7 @@ func TestTooMuchLog(t *testing.T) {
 		testDir       = "test_much_log"
 		testLogPath   = filepath.Join(testDir, "access_log")
 		rotationCount = 3
-		N             = 12 // N < log.Printf content size
+		N             = 12 // N > 10
 	)
 	err := os.Mkdir(testDir, 0777)
 	assert.Nil(t, err)
@@ -84,7 +85,7 @@ func TestTooMuchLog(t *testing.T) {
 		testLogPath+".%Y%m%d%H%M",
 		rotatelogs.WithLinkName(testLogPath),
 		rotatelogs.WithRotationCount(uint(rotationCount)),
-		rotatelogs.WithRotationSize(12),
+		rotatelogs.WithRotationSize(12), // Log contentSize > 12
 	)
 	assert.Nil(t, err)
 
@@ -93,10 +94,54 @@ func TestTooMuchLog(t *testing.T) {
 		log.Printf("Test content %d\n", i)
 	}
 	files, _ := ioutil.ReadDir(testDir)
-	fmt.Println(files)
 	assert.Equal(t, rotationCount+1, len(files))
 
 	bytez, err := ioutil.ReadFile(testLogPath)
 	assert.Nil(t, err)
 	assert.Equal(t, strconv.Itoa(N-1), string(bytez[len(bytez)-3:len(bytez)-1]))
+}
+
+func TestSizePriorityOverTime(t *testing.T) {
+
+	var (
+		testDir       = "test_size_priority_over_time"
+		testLogPath   = filepath.Join(testDir, "access_log")
+		rotationCount = 2
+		N             = 12
+	)
+	err := os.Mkdir(testDir, 0777)
+	assert.Nil(t, err)
+	defer os.RemoveAll(testDir)
+	assert.Nil(t, err)
+
+	rl, err := rotatelogs.New(
+		testLogPath+".%Y%m%d%H%M%S", // Accurate to seconds
+		rotatelogs.WithRotationCount(uint(rotationCount)),
+		rotatelogs.WithRotationSize(12000),
+	)
+	assert.Nil(t, err)
+
+	log.SetOutput(rl)
+	for i := 0; i < N; i++ {
+		log.Printf("Test content %d\n", i)
+		// N * sleepTime > 1s
+		time.Sleep(120 * time.Millisecond)
+	}
+	files, _ := ioutil.ReadDir(testDir)
+	assert.Equal(t, 1, len(files)) // N * contentSize < rotationSize
+
+	rl, err = rotatelogs.New(
+		testLogPath+".%Y%m%d%H%M%S", // Accurate to seconds
+		rotatelogs.WithRotationCount(uint(rotationCount)),
+	)
+	assert.Nil(t, err)
+
+	log.SetOutput(rl)
+	for i := 0; i < N; i++ {
+		log.Printf("Test content %d\n", i)
+		// N * sleepTime > 1s
+		time.Sleep(120 * time.Millisecond)
+	}
+	files, _ = ioutil.ReadDir(testDir)
+	assert.Equal(t, rotationCount, len(files))
 }

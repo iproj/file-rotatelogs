@@ -55,6 +55,7 @@ func WithMaxAge(d time.Duration) Option {
 	return option.New(optkeyMaxAge, d)
 }
 
+// Deprecated, rotationTime use pattern
 // WithRotationTime creates a new Option that sets the
 // time between rotation.
 func WithRotationTime(d time.Duration) Option {
