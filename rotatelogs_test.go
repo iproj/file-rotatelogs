@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jonboulle/clockwork"
 	rotatelogs "github.com/iproj/file-rotatelogs"
+	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
@@ -450,15 +450,15 @@ func TestGHIssue23(t *testing.T) {
 			Clock    rotatelogs.Clock
 		}{
 			{
-				Expected: filepath.Join(dir, strings.ToLower(strings.Replace(locName, "/", "_", -1))+".201806010000.log"),
+				Expected: filepath.Join(dir, strings.ToLower(strings.Replace(locName, "/", "_", -1))+".201806010318.log"),
 				Clock: ClockFunc(func() time.Time {
 					return time.Date(2018, 6, 1, 3, 18, 0, 0, loc)
 				}),
 			},
 			{
-				Expected: filepath.Join(dir, strings.ToLower(strings.Replace(locName, "/", "_", -1))+".201712310000.log"),
+				Expected: filepath.Join(dir, strings.ToLower(strings.Replace(locName, "/", "_", -1))+".201712312352.log"),
 				Clock: ClockFunc(func() time.Time {
-					return time.Date(2017, 12, 31, 23, 52, 0, 0, loc)
+					return time.Date(2017, 12, 31, 23, 52, 1, 12, loc)
 				}),
 			},
 		}
